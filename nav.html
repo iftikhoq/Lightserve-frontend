@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Document</title>
 </head>
 <body>
@@ -11,11 +12,37 @@
                 <div class="flex items-center">
                     <a href="#" class="text-xl font-bold">Lightserve</a>
                 </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#" class="hover:text-blue-200">Home</a>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="hover:text-blue-200">Home</a>
                     <a href="#" class="hover:text-blue-200">Services</a>
                     <a href="#" class="hover:text-blue-200">About</a>
                     <a href="#" class="hover:text-blue-200">Contact</a>
+                    <a href="checkout.html" class="hover:text-blue-200 ">Cart
+                    </a>
+                    <div id="auth-buttons">
+                        <a href="signin.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition duration-200 mr-2">
+                            Sign In
+                        </a>
+                        <a href="signup.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition duration-200">
+                            Sign Up
+                        </a>
+                    </div>
+                    <div id="profile-button" class="hidden">
+                        <a href="profile.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition duration-200">
+                            Profile
+                        </a>
+                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                        const token = localStorage.getItem("token");
+                        console.log("Token:", token);
+
+                        if (token && token !== "null" && token !== "undefined") {
+                            document.getElementById("auth-buttons").classList.add("hidden");
+                            document.getElementById("profile-button").classList.remove("hidden");
+                        }
+                    });
+                    </script>
                 </div>
 
                 <button class="md:hidden">
@@ -26,5 +53,5 @@
             </div>
         </div>
     </nav>
-</body>
+</body> 
 </html>

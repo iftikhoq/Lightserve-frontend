@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Your Brand</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/+plugin@5.0.1/custom-forms.min.css">
+</head>
+<body class="bg-gray-50">
+    <div id="nav-container"></div>
+
+    <script>
+        fetch('nav.html')
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+                const navElement = doc.querySelector('nav');
+    
+                if (navElement) {
+                    document.getElementById('nav-container').appendChild(navElement);
+                    
+                    checkAuth();
+                }
+            })
+            .catch(error => console.error('Error loading navigation:', error));
+    
+        function checkAuth() {
+            const token = localStorage.getItem("token");
+            console.log("Token:", token);
+    
+            if (token && token !== "null" && token !== "undefined") {
+                document.getElementById("auth-buttons").classList.add("hidden");
+                document.getElementById("profile-button").classList.remove("hidden");
+            }
+        }
+    </script>
+
+    
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+       
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Left Column - Form -->
+            <div class="lg:w-2/3">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-semibold mb-6">Contact Information</h2>
+                    
+                    <!-- Contact Form -->
+                    <form class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Email address</label>
+                            <input type="email" autocomplete="email" 
+                                   class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" 
+                                   placeholder="your.email@example.com">
+                            <p class="text-sm text-gray-500 mt-1">We'll send your receipt to this address</p>
+                        </div>
+
+                        <div class="border-t pt-6">
+                            <h2 class="text-2xl font-semibold mb-6">Shipping Address</h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium mb-1">Address</label>
+                                <input type="text" placeholder="Street and number" 
+                                       class="w-full px-4 py-3 border rounded-lg">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                
+                            </div>
+                        </div>
+
+
+                        <div class="mt-6">
+                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column - Summary -->
+            <div class="lg:w-1/3">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-semibold mb-6">Order Summary</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span>Product Name x1</span>
+                            <span>$49.99</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping</span>
+                            <span class="text-green-600">Free</span>
+                        </div>
+                        <div class="border-t pt-4">
+                            <div class="flex justify-between font-semibold">
+                                <span>Total</span>
+                                <span>$49.99</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button class="pay w-full bg-green-500 text-white py-4 px-6 rounded-lg hover:bg-primary-700 
+                                    transition-colors duration-200 font-medium">
+                            Pay
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Help Section -->
+                <div class="mt-6 bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="font-medium mb-3">Need help?</h3>
+                    <p class="text-sm text-gray-600">
+                        Contact our support team at 
+                        <a href="mailto:support@lightserve.com" class="text-primary-600">support@yourbrand.com</a>
+                        <br>or call (800) 555-1234
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+    <script>
+        async function loadFooter() {
+            try {
+                const response = await fetch('footer.html');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const footer = doc.querySelector('footer');
+                document.getElementById('footer-container').appendChild(footer);
+            } catch (error) {
+                console.error('Error loading footer:', error);
+                document.getElementById('footer-container').innerHTML = `
+                    <p class="text-center text-gray-600">Unable to load footer. Please try again later.</p>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadFooter);
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        // Fetch user email
+        try {
+            const response = await fetch("http://iftikhoq.github.io/userdetails/", {
+                headers: { "Authorization": `Token ${token}` }
+            });
+            const data = await response.json();
+            document.querySelector('input[type="email"]').value = data.email;
+        } catch (error) {
+            console.error("Failed to load user email:", error);
+        }
+
+        const cart = JSON.parse(sessionStorage.getItem("cart") || "[]");
+        const orderSummary = document.querySelector(".space-y-4");
+        orderSummary.innerHTML = ""; x
+        let total = 0;
+
+        for (const serviceId of cart) {
+            try {
+                const res = await fetch(`http://iftikhoq.github.io/services/${serviceId}`);
+                const service = await res.json();
+
+                total += parseFloat(service.price);
+                orderSummary.innerHTML += `
+                    <div class="flex justify-between">
+                        <span>${service.name} x1</span>
+                        <span>$${service.price}</span>
+                    </div>
+                `;
+            } catch (error) {
+                console.error("Error fetching service:", error);
+            }
+        }
+
+        orderSummary.innerHTML += `
+            <div class="flex justify-between">
+                <span>Shipping</span>
+                <span class="text-green-600">Free</span>
+            </div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between font-semibold">
+                    <span>Total</span>
+                    <span>$${total.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+
+        document.querySelector(".pay").textContent = `Pay $${total.toFixed(2)}`;
+
+        document.querySelector(".pay").addEventListener("click", async function () {
+            const address = document.querySelector('input[type="text"]').value;
+
+            if (!address) {
+                alert("Please enter your shipping address.");
+                return;
+            }
+
+            const orderData = {
+                address: address,
+                services: cart,
+                total_price: total.toFixed(2)
+            };
+
+            try {
+                const res = await fetch("http://iftikhoq.github.io/orders/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Token ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (res.ok) {
+                    alert("Order placed successfully!");
+                    sessionStorage.removeItem("cart"); 
+                    window.location.href = "index.html"; 
+                } else {
+                    const errorData = await res.json();
+                    console.error("Order error:", errorData);
+                    alert("Failed to place order.");
+                }
+            } catch (error) {
+                console.error("Error sending order:", error);
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+
+    <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-center text-gray-700">Login</h2>
+
+        <form id="loginForm" class="mt-4">
+            <div class="mb-4">
+                <label class="block text-gray-700">Username</label>
+                <input type="text" id="username" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700">Password</label>
+                <input type="password" id="password" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+                Login
+            </button>
+        </form>
+
+        <p id="message" class="mt-4 text-center text-red-500"></p>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://iftikhoq.github.io/login/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            const messageEl = document.getElementById("message");
+
+            if (response.ok) {
+                localStorage.setItem("token", data.token); 
+                messageEl.textContent = "Login successful! Redirecting...";
+                messageEl.classList.add("text-green-500");
+                setTimeout(() => window.location.href = "index.html", 2000);
+            } else {
+                messageEl.textContent = data.error || "Invalid credentials. Try again.";
+            }
+        });
+    </script>
+
+</body>
+</html>
